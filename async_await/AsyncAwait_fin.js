@@ -1,5 +1,5 @@
 function fn(nums) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve(nums * 2);
     }, 1000);
@@ -9,13 +9,13 @@ function* gen() {
   const num1 = yield fn(1);
   const num2 = yield fn(num1);
   const num3 = yield fn(num2);
+
   return num3;
 }
 
 function generatorToAsync(generatorFn) {
   return function () {
     const gen = generatorFn.apply(this, arguments); // gen有可能传参
-
     // 返回一个Promise
     return new Promise((resolve, reject) => {
       // 内部定义一个go函数 用来一步一步的跨过yield的阻碍
@@ -55,12 +55,12 @@ function generatorToAsync(generatorFn) {
             //    })
             // })
 
-            (val) => go('next', val),
-            // 如果promise被reject了 就再次进入step函数
+            val => go('next', val),
+            // 如果promise被reject了 就再次进入go函数
             // 不同的是，这次的try catch中调用的是gen.throw(err)
             // 那么自然就被catch到 然后把promise给reject掉啦
 
-            (err) => go('throw', err)
+            err => go('throw', err)
           );
         }
       }
@@ -72,7 +72,7 @@ function generatorToAsync(generatorFn) {
 
 const asyncFn = generatorToAsync(gen);
 
-asyncFn().then((res) => console.log(res));
+asyncFn().then(res => console.log(res));
 
 // 7张图，20分钟就能搞定的async/await原理！为什么要拖那么久？
 //https://juejin.cn/post/7007031572238958629#heading-14

@@ -1,5 +1,5 @@
 function fn(nums) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve(nums * 2);
     }, 1000);
@@ -16,11 +16,11 @@ function generatorToAsync(generatorFn) {
     return new Promise((resolve, reject) => {
       const g = generatorFn();
       const next1 = g.next();
-      next1.value.then((res1) => {
+      next1.value.then(res1 => {
         const next2 = g.next(res1); // 传入上次的res1
-        next2.value.then((res2) => {
+        next2.value.then(res2 => {
           const next3 = g.next(res2); // 传入上次的res2
-          next3.value.then((res3) => {
+          next3.value.then(res3 => {
             // 传入上次的res3
             resolve(g.next(res3).value);
           });
@@ -32,4 +32,4 @@ function generatorToAsync(generatorFn) {
 
 const asyncFn = generatorToAsync(gen);
 
-asyncFn().then((res) => console.log(res)); // 3秒后输出 8
+asyncFn().then(res => console.log(res)); // 3秒后输出 8

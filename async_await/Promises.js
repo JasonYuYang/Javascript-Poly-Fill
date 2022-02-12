@@ -60,17 +60,16 @@ class MyPromise {
     // 接收两个回调 onFulfilled, onRejected
 
     // 参数校验，确保一定是函数
-    onFulfilled =
-      typeof onFulfilled === 'function' ? onFulfilled : (val) => val;
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val;
     onRejected =
       typeof onRejected === 'function'
         ? onRejected
-        : (reason) => {
+        : reason => {
             throw reason;
           };
 
     var thenPromise = new MyPromise((resolve, reject) => {
-      const resolvePromise = (cb) => {
+      const resolvePromise = cb => {
         queueMicrotask(() => {
           try {
             const x = cb(this.PromiseResult);
@@ -79,7 +78,7 @@ class MyPromise {
               throw new Error('不能返回自身。。。');
             }
             if (x instanceof MyPromise) {
-              // 如果返回值是Promise
+              // 如果返回值是Promise那么需要将这个Promise的值继续用then往下传递，否则直接resolve即可
               // 如果返回值是promise对象，返回值为成功，新promise就是成功
               // 如果返回值是promise对象，返回值为失败，新promise就是失败
               // 谁知道返回的promise是失败成功？只有then知道
@@ -91,6 +90,7 @@ class MyPromise {
           } catch (err) {
             // 处理报错
             reject(err);
+            throw new Error(err);
           }
         });
       };
@@ -117,6 +117,9 @@ class MyPromise {
 }
 //resolve方法
 MyPromise.resolve = function (val) {
+  if (val instanceof MyPromise) {
+    return val;
+  }
   return new MyPromise((resolve, reject) => {
     resolve(val);
   });
@@ -143,10 +146,10 @@ MyPromise.all = function (promises) {
     promises.forEach((promise, index) => {
       if (promise instanceof MyPromise) {
         promise.then(
-          (res) => {
+          res => {
             addData(index, res);
           },
-          (err) => reject(err)
+          err => reject(err)
         );
       } else {
         addData(index, promise);
@@ -161,13 +164,13 @@ MyPromise.all = function (promises) {
 
 MyPromise.race = function (promises) {
   return new MyPromise((resolve, reject) => {
-    promises.forEach((promise) => {
+    promises.forEach(promise => {
       if (promise instanceof MyPromise) {
         promise.then(
-          (res) => {
+          res => {
             resolve(res);
           },
-          (err) => {
+          err => {
             reject(err);
           }
         );
@@ -198,10 +201,10 @@ MyPromise.allSettled = function (promises) {
     promises.forEach((promise, i) => {
       if (promise instanceof MyPromise) {
         promise.then(
-          (res) => {
+          res => {
             addData('fulfilled', res, i);
           },
-          (err) => {
+          err => {
             addData('rejected', err, i);
           }
         );
@@ -220,12 +223,12 @@ MyPromise.allSettled = function (promises) {
 MyPromise.any = function (promises) {
   return new MyPromise((resolve, reject) => {
     let count = 0;
-    promises.forEach((promise) => {
+    promises.forEach(promise => {
       promise.then(
-        (val) => {
+        val => {
           resolve(val);
         },
-        (err) => {
+        err => {
           count++;
           if (count === promises.length) {
             reject(new AggregateError('All promises were rejected'));
@@ -241,12 +244,12 @@ const test3 = new MyPromise((resolve, reject) => {
   // reject(100) // 输出 状态：失败 值：300
 })
   .then(
-    (res) => 2 * res,
-    (err) => 3 * err
+    res => 2 * res,
+    err => 3 * err
   )
   .then(
-    (res) => console.log(res),
-    (err) => console.log(err)
+    res => console.log(res),
+    err => console.log(err)
   );
 
 const test4 = new MyPromise((resolve, reject) => {
@@ -255,12 +258,12 @@ const test4 = new MyPromise((resolve, reject) => {
   // 这里可没搞反哦。真的搞懂了，就知道了为啥这里是反的
 })
   .then(
-    (res) => new MyPromise((resolve, reject) => reject(2 * res)),
-    (err) => new MyPromise((resolve, reject) => resolve(2 * res))
+    res => new MyPromise((resolve, reject) => reject(2 * res)),
+    err => new MyPromise((resolve, reject) => resolve(2 * res))
   )
   .then(
-    (res) => console.log(res),
-    (err) => console.log(err)
+    res => console.log(res),
+    err => console.log(err)
   );
 
 //   看了就会，手写Promise原理，最通俗易懂的版本！！！
@@ -276,7 +279,7 @@ const test4 = new MyPromise((resolve, reject) => {
 //https://github.com/xieranmaya/blog/issues/3#
 
 // v是一个实例化的promise，且状态为fulfilled
-let v = new Promise((resolve) => {
+let v = new Promise(resolve => {
   console.log('begin');
   resolve('then');
 });
@@ -288,9 +291,9 @@ let v = new Promise((resolve) => {
 // 推迟原因：浏览器会创建一个 PromiseResolveThenableJob 去处理这个 Promise 实例，这是一个微任务。
 // 等到下次循环到来这个微任务会执行，也就是PromiseResolveThenableJob 执行中的时候，因为这个Promise 实例是fulfilled状态，所以又会注册一个它的.then()回调
 // 又等一次循环到这个Promise 实例它的.then()回调执行后，才会注册下面的这个.then(),于是就被推迟了两个时序
-new Promise((resolve) => {
+new Promise(resolve => {
   resolve(v);
-}).then((v) => {
+}).then(v => {
   console.log(v);
 });
 
@@ -301,7 +304,7 @@ new Promise((resolve) => {
       console.log(v)
   }); */
 
-new Promise((resolve) => {
+new Promise(resolve => {
   console.log(1);
   resolve();
 })
