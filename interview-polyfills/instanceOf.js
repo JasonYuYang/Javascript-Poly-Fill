@@ -1,9 +1,9 @@
-function instanceOf(constructor, instance) {
-  let cp = constructor.prototype;
-  let ip = instance.__proto__;
+function instanceOf(father, child) {
+  let fp = father.prototype;
+  let cp = child.__proto__;
 
-  while (ip) {
-    if (cp === ip) {
+  while (cp) {
+    if (fp === cp) {
       return true;
     }
     cp = cp.__proto__;

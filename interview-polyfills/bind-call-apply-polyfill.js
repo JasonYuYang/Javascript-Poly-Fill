@@ -1,6 +1,6 @@
 //juejin.cn/post/6844903906279964686#heading-1
 
-https: Function.prototype.myCall = function (ctx, ...args) {
+Function.prototype.myCall = function (ctx, ...args) {
   // 简单处理未传ctx上下文，或者传的是null和undefined等场景
   if (!ctx) {
     ctx = typeof window !== undefined ? window : global;

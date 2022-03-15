@@ -16,11 +16,10 @@ function throttleDate(method, wait) {
 function throttleSetTimeout(method, wait) {
   let timeout;
   return function (...args) {
-    let context = this;
     if (!timeout) {
       timeout = setTimeout(() => {
         timeout = null;
-        method.apply(context, args);
+        method.apply(this, args);
       }, wait);
     }
   };

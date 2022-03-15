@@ -44,7 +44,7 @@ console.log('script end');
 // setTimeout
 ////一般來說會寫成
 //async1 end,promise2,promuise3
-//要注意背起來!! 當await後面回傳promisec或是thenable object要注意延遲兩個task再換他
+//要注意背起來!! 當await後面回傳promise或是thenable object要注意延遲兩個task再換他
 
 //原因1 :await會把後面回傳的值v,轉成new Promise((resolve)=>{resolve(v)})
 //https://juejin.cn/post/6844903762478235656#heading-10

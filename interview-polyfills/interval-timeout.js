@@ -27,3 +27,10 @@ function myTimeout(fn, delay) {
     clearInterval(timeout);
   }, delay);
 }
+
+//有關於clearTimeout 以及timer=null的那些事
+//timer只不过是setInterval的一个引用而已，你赋值timer为null,只不过是清除了timer这个变量，清除了timer的内存占用，setInterval还是存在的。清除了定时器再赋值null可以释放内存占用。
+//https://juejin.cn/post/6975467069135552520
+
+//「前端进阶」你不知道的 setTimeout、setInterval、requestAnimationFrame
+//https://juejin.cn/post/7045113363625410590#heading-8

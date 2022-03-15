@@ -9,7 +9,6 @@ function* gen() {
   const num1 = yield fn(1);
   const num2 = yield fn(num1);
   const num3 = yield fn(num2);
-
   return num3;
 }
 
@@ -47,7 +46,7 @@ function generatorToAsync(generatorFn) {
             // value这个promise被resolve的时候，就会执行next
             // 并且只要done不是true的时候 就会递归的往下解开promise
             // 对应gen.next().value.then(value => {
-            //    gen.next(value).value.then(value2 => {
+            //      gen.next(value).value.then(value2 => {
             //       gen.next()
             //
             //      // 此时done为true了 整个promise被resolve了

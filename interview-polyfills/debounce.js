@@ -36,7 +36,7 @@ function debounceRightNow(func, delay) {
     } else {
       func.apply(this, args);
       // 为了解决只触发一次，会同时触发首次触发和延时触发的问题引入的特殊值
-      timerId = -1;
+      timeoutId = -1;
       //不是true也不是false
     }
   };

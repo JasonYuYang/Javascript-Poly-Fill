@@ -190,3 +190,28 @@ function deepclone(target, map = new Map()) {
 
 //https://juejin.cn/post/6844903929705136141#heading-14
 //https://juejin.cn/post/6844903929705136141#heading-0
+
+//deepClone 面試夠用版
+
+function deepCloneInterview(target, map = new Map()) {
+  function isObject(target) {
+    const type = typeof target;
+    return type !== 'null' && (type === 'object' || type === 'function');
+  }
+  if (!isObject(target)) {
+    return target;
+  }
+
+  let cloneTarget = new target.constructor();
+  //防止循環引用
+  if (map.get(target)) {
+    return map.get(target);
+  }
+  map.set(target, cloneTarget);
+  //處理Object類型與Array類型
+  for (let key in target) {
+    cloneTarget[key] =
+      typeof target[key] === 'object' ? deepCloneInterview(target[key], map) : target[key];
+  }
+  return cloneTarget;
+}

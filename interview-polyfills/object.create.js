@@ -78,7 +78,7 @@ const Workshop = {
 };
 const AnotherWorkshop = Object.assign(Object.create(Workshop), {
   speakUp(msg) {
-    this.ask(msg.tpUpperCase());
+    this.ask(msg.toUpperCase());
   },
 });
 
